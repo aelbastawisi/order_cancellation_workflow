@@ -1,0 +1,13 @@
+spring:
+  jpa:
+    database: sql_server
+    database-platform: org.hibernate.dialect.SQLServer2012Dialect
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:sqlserver://localhost:1433;database=camunda-workflow
+    username: sa
+    password:
+
+camunda.bpm.admin-user:
+  id: admin
+  password: admin
