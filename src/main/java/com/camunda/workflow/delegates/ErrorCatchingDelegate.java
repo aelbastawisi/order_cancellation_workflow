@@ -10,7 +10,7 @@ public class ErrorCatchingDelegate implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) throws Exception {
-        logger.info("Got an error");
+        logger.info("Got an error: {}", execution.getVariable(ReportSendingDelegate.ERROR_CODE));
 
     }
 }

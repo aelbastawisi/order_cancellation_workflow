@@ -102,9 +102,6 @@
       <bpmn:outgoing>Flow_order</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1rpkltj" messageRef="Message_1bin51o" />
     </bpmn:startEvent>
-    <bpmn:boundaryEvent id="Event_0tf9t1f" attachedToRef="Activity_locationPreview">
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_14b367r" />
-    </bpmn:boundaryEvent>
   </bpmn:process>
   <bpmn:error id="Error_00qwxpf" name="Error_sendReport" errorCode="Error_sendReport" />
   <bpmn:message id="Message_1bin51o" name="Message_startProcess" />
@@ -273,9 +270,6 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1136.5" y="466.5" width="63" height="27" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1lrcz8z_di" bpmnElement="Event_0tf9t1f">
-        <dc:Bounds x="702" y="462" width="36" height="36" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
