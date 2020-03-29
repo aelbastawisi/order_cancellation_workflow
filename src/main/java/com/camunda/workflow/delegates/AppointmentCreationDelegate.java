@@ -6,9 +6,11 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
+@Component
 public class AppointmentCreationDelegate implements JavaDelegate {
 
     private final Logger logger = LoggerFactory.getLogger(AppointmentCreationDelegate.class);

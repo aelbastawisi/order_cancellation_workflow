@@ -18,7 +18,7 @@
       <bpmn:incoming>Flow_makeLocationTest</bpmn:incoming>
       <bpmn:outgoing>Flow_sendRequestAfterTest</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="Activity_createAppointment" name="create Appointment" camunda:class="com.camunda.workflow.delegates.AppointmentCreationDelegate">
+    <bpmn:serviceTask id="Activity_createAppointment" name="create Appointment" camunda:delegateExpression="${appointmentCreationDelegate}">
       <bpmn:incoming>Flow_createAppointment</bpmn:incoming>
       <bpmn:outgoing>Flow_locationPreview</bpmn:outgoing>
     </bpmn:serviceTask>
