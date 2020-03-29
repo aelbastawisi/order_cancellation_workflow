@@ -11,11 +11,11 @@ public class Order implements Serializable {
     public Order() {
     }
 
-    public static Order createDummyOrder(){
+    public static Order createDummyOrder() {
         Order order = new Order();
         order.setId(UUID.randomUUID().toString());
-        order.setName("Order: "+order.getId());
-        order.setAddress("Address: "+order.getId());
+        order.setName("Order: " + order.getId());
+        order.setAddress("Address: " + order.getId());
         return order;
     }
 

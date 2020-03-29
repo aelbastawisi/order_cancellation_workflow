@@ -18,7 +18,7 @@ public class AppointmentCreationDelegate implements JavaDelegate {
         logger.info("AppointmentCreateion Delegate received the execution for create appointment");
         Object order = execution.getVariable(ProcessController.VARIABLE_ORDER_KEY);
         if (order instanceof Order) {
-            logger.info("Found order variable {}",  order.toString());
+            logger.info("Found order variable {}", order.toString());
         }
         execution.setVariable("appointment", LocalDate.now());
     }

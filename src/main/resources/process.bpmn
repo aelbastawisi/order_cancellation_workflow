@@ -54,7 +54,7 @@
       <bpmn:incoming>Flow_reviewOrder</bpmn:incoming>
       <bpmn:outgoing>Flow_reviewResult</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Activity_order" name="Order">
+    <bpmn:userTask id="Activity_order" name="Create Request">
       <bpmn:incoming>Flow_order</bpmn:incoming>
       <bpmn:outgoing>Flow_reviewOrder</bpmn:outgoing>
     </bpmn:userTask>
@@ -88,9 +88,32 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_end" sourceRef="Activity_exportCertificate" targetRef="Event_06muy57" />
     <bpmn:sequenceFlow id="Flow_sendRequestAfterTest" sourceRef="Activity_makeTest" targetRef="Activity_sendRequest" />
+    <bpmn:boundaryEvent id="Event_sendReportError" name="Send Report Error" attachedToRef="Activity_sendRequest">
+      <bpmn:outgoing>Flow_0cwez2z</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0miqx2m" errorRef="Error_00qwxpf" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0cwez2z" sourceRef="Event_sendReportError" targetRef="Activity_errorCatching" />
+    <bpmn:serviceTask id="Activity_errorCatching" name="Error Catching" camunda:class="com.camunda.workflow.delegates.ErrorCatchingDelegate">
+      <bpmn:incoming>Flow_0cwez2z</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nnbf1v</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_0hkp673">
+      <bpmn:incoming>Flow_0nnbf1v</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0nnbf1v" sourceRef="Activity_errorCatching" targetRef="Event_0hkp673" />
   </bpmn:process>
+  <bpmn:error id="Error_00qwxpf" name="Error_sendReport" errorCode="Error_sendReport" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="cancelCertificateProcess">
+      <bpmndi:BPMNEdge id="Flow_0nnbf1v_di" bpmnElement="Flow_0nnbf1v">
+        <di:waypoint x="790" y="630" />
+        <di:waypoint x="708" y="630" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cwez2z_di" bpmnElement="Flow_0cwez2z">
+        <di:waypoint x="940" y="578" />
+        <di:waypoint x="940" y="630" />
+        <di:waypoint x="890" y="630" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0todgk5_di" bpmnElement="Flow_sendRequestAfterTest">
         <di:waypoint x="850" y="520" />
         <di:waypoint x="919" y="520" />
@@ -232,6 +255,18 @@
         <dc:Bounds x="152" y="102" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="158" y="145" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1s6glfv_di" bpmnElement="Activity_errorCatching">
+        <dc:Bounds x="790" y="590" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0hkp673_di" bpmnElement="Event_0hkp673">
+        <dc:Bounds x="672" y="612" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1jhf6na_di" bpmnElement="Event_sendReportError">
+        <dc:Bounds x="922" y="542" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="909" y="585" width="63" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>

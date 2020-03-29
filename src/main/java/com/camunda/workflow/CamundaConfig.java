@@ -5,7 +5,6 @@ import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import java.io.Serializable;
 
@@ -13,18 +12,18 @@ import java.io.Serializable;
 public class CamundaConfig implements Serializable {
 
     @Bean
-    public ProcessEngine processEngine(){
+    public ProcessEngine processEngine() {
         return ProcessEngines.getDefaultProcessEngine();
     }
 
 
     @Bean
-    public RuntimeService camundaRuntimeService(ProcessEngine processEngine){
+    public RuntimeService camundaRuntimeService(ProcessEngine processEngine) {
         return processEngine.getRuntimeService();
     }
 
     @Bean
-    public TaskService taskService(ProcessEngine processEngine){
+    public TaskService taskService(ProcessEngine processEngine) {
         return processEngine.getTaskService();
     }
 }
