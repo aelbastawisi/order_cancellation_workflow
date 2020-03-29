@@ -2,11 +2,13 @@ spring:
   jpa:
     database: sql_server
     database-platform: org.hibernate.dialect.SQLServer2012Dialect
+    hibernate:
+      ddl-auto: update
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:sqlserver://localhost:1433;database=camunda-workflow
     username: sa
-    password:
+    password: Password@123
 
 camunda.bpm.admin-user:
   id: admin

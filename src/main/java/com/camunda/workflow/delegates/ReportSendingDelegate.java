@@ -15,7 +15,7 @@ public class ReportSendingDelegate implements JavaDelegate {
     public void execute(DelegateExecution execution) throws Exception {
         logger.info("Delegate Report sending received the execution");
         Order order = (Order) execution.getVariable(ProcessController.VARIABLE_ORDER_KEY);
-        if ("0".equals(order.getId())) {
+        if (order.getId() == 2L) {
             throw new BpmnError("Error_sendReport");
         }
         execution.setVariable("Report", "Report 1");

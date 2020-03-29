@@ -1,29 +1,25 @@
 package com.camunda.workflow.domain;
 
+import javax.persistence.*;
 import java.io.Serializable;
-import java.util.UUID;
 
+@Entity
+@Table(name = "ORDERS")
 public class Order implements Serializable {
-    private String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private String address;
 
     public Order() {
     }
 
-    public static Order createDummyOrder() {
-        Order order = new Order();
-        order.setId(UUID.randomUUID().toString());
-        order.setName("Order: " + order.getId());
-        order.setAddress("Address: " + order.getId());
-        return order;
-    }
-
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
