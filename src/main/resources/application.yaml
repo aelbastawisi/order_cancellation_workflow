@@ -10,6 +10,8 @@ spring:
     username: sa
     password: Password@123
 
-camunda.bpm.admin-user:
-  id: admin
-  password: admin
+camunda.bpm:
+    admin-user:
+      id: admin
+      password: admin
+    default-number-of-retries: 1

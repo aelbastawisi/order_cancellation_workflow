@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_03m7ala" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.1">
   <bpmn:process id="cancelCertificateProcess" name="Cancel Certificate" isExecutable="true">
+    <bpmn:extensionElements>
+      <camunda:executionListener class="com.camunda.workflow.controller.listeners.ProcessExecutionListener" event="end" />
+    </bpmn:extensionElements>
     <bpmn:serviceTask id="Activity_exportCertificate" name="Export Certificate" camunda:class="com.camunda.workflow.delegates.DelegateExportCertificate">
       <bpmn:incoming>Flow_decisionYes</bpmn:incoming>
       <bpmn:outgoing>Flow_end</bpmn:outgoing>
@@ -51,10 +54,16 @@
       <bpmn:incoming>Flow_end</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="Activity_reviewOrder" name="Review Order">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="com.camunda.workflow.controller.listeners.UserTaskListener" event="complete" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_reviewOrder</bpmn:incoming>
       <bpmn:outgoing>Flow_reviewResult</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="Activity_order" name="Create Request">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="com.camunda.workflow.controller.listeners.UserTaskListener" event="complete" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_order</bpmn:incoming>
       <bpmn:outgoing>Flow_reviewOrder</bpmn:outgoing>
     </bpmn:userTask>
@@ -247,11 +256,8 @@
           <dc:Bounds x="1310" y="145" width="20" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1h2oe4p_di" bpmnElement="Event_startProcess">
-        <dc:Bounds x="172" y="102" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="160" y="145" width="61" height="40" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="Activity_14entjf_di" bpmnElement="Activity_reviewOrder">
+        <dc:Bounds x="330" y="350" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1q0gojq_di" bpmnElement="Activity_order">
         <dc:Bounds x="320" y="80" width="100" height="80" />
@@ -259,11 +265,14 @@
       <bpmndi:BPMNShape id="Activity_1s6glfv_di" bpmnElement="Activity_errorCatching">
         <dc:Bounds x="800" y="70" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_14entjf_di" bpmnElement="Activity_reviewOrder">
-        <dc:Bounds x="330" y="350" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0hkp673_di" bpmnElement="Event_0hkp673">
         <dc:Bounds x="702" y="92" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1h2oe4p_di" bpmnElement="Event_startProcess">
+        <dc:Bounds x="172" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="160" y="145" width="61" height="40" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1jhf6na_di" bpmnElement="Event_sendReportError">
         <dc:Bounds x="1091" y="462" width="36" height="36" />

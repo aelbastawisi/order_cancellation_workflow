@@ -27,6 +27,8 @@ public class ProcessController implements Serializable {
     // PROCESS VARIABLES
     public static final String VARIABLE_PROCESS_DEFINITION_ID_KEY = "PROCESS_DEFINITION_ID";
     public static final String VARIABLE_ORDER_KEY = "ORDER";
+    public static final String VARIABLE_APPOINTMENT_KEY = "Appointment";
+    public static final String VARIABLE_REPORT_KEY = "Report";
     public static final String VARIABLE_IS_REVIEW_COMPLETED_KEY = "isReviewCompleted";
     public static final String VARIABLE_IS_LOCATION_NEED_TEST_KEY = "isLocationNeedTest";
     public static final String VARIABLE_IS_REVIEW_REPORT_OK_KEY = "isReviewReportOk";
