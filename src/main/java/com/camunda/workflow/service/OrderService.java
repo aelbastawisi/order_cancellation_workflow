@@ -18,4 +18,18 @@ public class OrderService implements Serializable {
     public Order saveOrder(Order order) {
         return this.orderRepository.save(order);
     }
+
+    public Order getOrder(Long orderId) {
+        return this.orderRepository.findById(orderId).orElse(null);
+    }
+
+    public Order updateOrderAccordingToBR(Long orderId, Order current){
+        Order order = getOrder(orderId);
+        if(order != null){
+            order.setName(current.getName());
+            order.setAddress(current.getAddress());
+            return saveOrder(order);
+        }
+        return null;
+    }
 }
