@@ -48,7 +48,7 @@
         <bpmn:outgoing>Flow_0ffummx</bpmn:outgoing>
         <bpmn:outgoing>Flow_126p3h8</bpmn:outgoing>
       </bpmn:exclusiveGateway>
-      <bpmn:serviceTask id="Activity_1jbkwpp" name="Send Report" camunda:class="com.camunda.workflow.delegates.ReportSendingDelegate">
+      <bpmn:serviceTask id="Activity_1jbkwpp" name="Send Report" camunda:class="com.camunda.workflow.delegates.order_cancellation.ReportSendingDelegate">
         <bpmn:incoming>Flow_126p3h8</bpmn:incoming>
         <bpmn:incoming>Flow_0gnis9w</bpmn:incoming>
         <bpmn:outgoing>Flow_1t4knp8</bpmn:outgoing>
@@ -75,7 +75,7 @@
       <bpmn:endEvent id="Event_05mphgl">
         <bpmn:incoming>Flow_0g5dx8m</bpmn:incoming>
       </bpmn:endEvent>
-      <bpmn:serviceTask id="Activity_0pmxi9j" name="Export Certificate" camunda:class="com.camunda.workflow.delegates.DelegateExportCertificate">
+      <bpmn:serviceTask id="Activity_0pmxi9j" name="Export Certificate" camunda:class="com.camunda.workflow.delegates.order_cancellation.DelegateExportCertificate">
         <bpmn:incoming>Flow_0z1kq4r</bpmn:incoming>
         <bpmn:outgoing>Flow_0xgtz61</bpmn:outgoing>
       </bpmn:serviceTask>
@@ -99,10 +99,10 @@
       <bpmn:sequenceFlow id="Flow_0g6exlh" sourceRef="Event_1bl8z4u" targetRef="Activity_reviewOrder" />
       <bpmn:sequenceFlow id="Flow_0xgtz61" sourceRef="Activity_0pmxi9j" targetRef="Event_0b38g0q" />
       <bpmn:sequenceFlow id="Flow_0z1kq4r" name="Yes" sourceRef="Gateway_0sdf0mv" targetRef="Activity_0pmxi9j">
-        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{isReviewReportOk}</bpmn:conditionExpression>
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{Is_Review_Report_OK}</bpmn:conditionExpression>
       </bpmn:sequenceFlow>
       <bpmn:sequenceFlow id="Flow_0g5dx8m" name="No" sourceRef="Gateway_0sdf0mv" targetRef="Event_05mphgl">
-        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{not isReviewReportOk}</bpmn:conditionExpression>
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{not Is_Review_Report_OK}</bpmn:conditionExpression>
       </bpmn:sequenceFlow>
       <bpmn:sequenceFlow id="Flow_08yokto" sourceRef="Activity_reviewReport" targetRef="Gateway_0sdf0mv" />
       <bpmn:sequenceFlow id="Flow_14bwkts" sourceRef="Event_0jpgdoe" targetRef="Activity_locationPreview" />
@@ -138,7 +138,7 @@
       <bpmn:incoming>Flow_1odiy69</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1odiy69" sourceRef="Activity_logError" targetRef="Event_1gyxybz" />
-    <bpmn:serviceTask id="Activity_logError" name="Log Error" camunda:class="com.camunda.workflow.delegates.ErrorCatchingDelegate">
+    <bpmn:serviceTask id="Activity_logError" name="Log Error" camunda:class="com.camunda.workflow.delegates.order_cancellation.ErrorCatchingDelegate">
       <bpmn:incoming>Flow_0w0f2c9</bpmn:incoming>
       <bpmn:outgoing>Flow_1odiy69</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -191,6 +191,10 @@
       <bpmndi:BPMNShape id="Activity_1hcd0h9_di" bpmnElement="Activity_1hcd0h9" isExpanded="true">
         <dc:Bounds x="530" y="85" width="1330" height="530" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_14bwkts_di" bpmnElement="Flow_14bwkts">
+        <di:waypoint x="1068" y="275" />
+        <di:waypoint x="1105" y="275" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_08yokto_di" bpmnElement="Flow_08yokto">
         <di:waypoint x="1545" y="525" />
         <di:waypoint x="1655" y="525" />
@@ -199,7 +203,7 @@
         <di:waypoint x="1705" y="525" />
         <di:waypoint x="1792" y="525" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1728" y="656" width="15" height="14" />
+          <dc:Bounds x="1728" y="493" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0z1kq4r_di" bpmnElement="Flow_0z1kq4r">
@@ -266,10 +270,6 @@
       <bpmndi:BPMNEdge id="Flow_0k9yhm4_di" bpmnElement="Flow_0k9yhm4">
         <di:waypoint x="865" y="145" />
         <di:waypoint x="930" y="145" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_14bwkts_di" bpmnElement="Flow_14bwkts">
-        <di:waypoint x="1068" y="275" />
-        <di:waypoint x="1105" y="275" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_1qcf1qp_di" bpmnElement="Activity_reviewOrder">
         <dc:Bounds x="765" y="105" width="100" height="80" />

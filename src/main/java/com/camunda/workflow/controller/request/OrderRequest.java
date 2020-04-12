@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
-public class UserTaskRequest extends SimpleRequest {
+public class OrderRequest extends SimpleRequest {
     private Order order;
 }

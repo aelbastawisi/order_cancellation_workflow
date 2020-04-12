@@ -28,6 +28,8 @@ public class OrderService implements Serializable {
         if(order != null){
             order.setName(current.getName());
             order.setAddress(current.getAddress());
+            order.setPrerequisites(current.getPrerequisites());
+            order.setIsConflict(current.getIsConflict());
             return saveOrder(order);
         }
         return null;

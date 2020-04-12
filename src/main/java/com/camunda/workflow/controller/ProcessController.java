@@ -2,9 +2,6 @@ package com.camunda.workflow.controller;
 
 import com.camunda.workflow.controller.request.CancelProcessInstanceRequest;
 import com.camunda.workflow.controller.request.SimpleRequest;
-import com.camunda.workflow.controller.request.UserTaskRequest;
-import com.camunda.workflow.domain.Order;
-import com.camunda.workflow.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
@@ -14,33 +11,29 @@ import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static com.camunda.workflow.util.Constants.*;
+import static com.camunda.workflow.util.Constants.PROCESS_CANCEL_CERTIFICATE_DEFINITION_KEY;
+import static com.camunda.workflow.util.Constants.VARIABLE_PROCESS_INSTANCE_ID_KEY;
 
-@RestController
-@RequestMapping("process")
 @Slf4j
 public class ProcessController implements Serializable {
 
-    private final RuntimeService runtimeService;
-    private final TaskService taskService;
-    private final OrderService orderService;
+    protected final RuntimeService runtimeService;
+    protected final TaskService taskService;
 
-    public ProcessController(RuntimeService runtimeService, TaskService taskService, OrderService orderService) {
+    public ProcessController(RuntimeService runtimeService, TaskService taskService) {
         this.runtimeService = runtimeService;
         this.taskService = taskService;
-        this.orderService = orderService;
     }
 
     private ProcessInstance startProcess(String businessKey) {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, businessKey);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(PROCESS_CANCEL_CERTIFICATE_DEFINITION_KEY, businessKey);
         log.info("Process: {} started", processInstance.getProcessDefinitionId());
         return processInstance;
     }
@@ -51,10 +44,9 @@ public class ProcessController implements Serializable {
      * @param simpleRequest contain business key for the process to be started
      * @return ResponseEntity
      */
-    @PostMapping("start")
-    public ResponseEntity<String> startProcessByMessage(@RequestBody SimpleRequest simpleRequest) {
+    protected ResponseEntity<String> startProcessByMessage(@Valid SimpleRequest simpleRequest, String processStartMessageKey) {
         // correlate the message
-        MessageCorrelationResult result = runtimeService.createMessageCorrelation(PROCESS_MESSAGE_KEY)
+        MessageCorrelationResult result = runtimeService.createMessageCorrelation(processStartMessageKey)
                 .processInstanceBusinessKey(simpleRequest.getBusinessKey())
                 .correlateWithResult();
         ProcessInstance processInstance = result.getProcessInstance();
@@ -66,109 +58,6 @@ public class ProcessController implements Serializable {
     }
 
     /**
-     * Complete Create Order Request task using the passed request body.
-     *
-     * @param userTaskRequest used in task completion
-     * @return ResponseEntity
-     */
-    @PostMapping("request/create")
-    public ResponseEntity<String> completeOrderTask(@RequestBody UserTaskRequest userTaskRequest) {
-        Supplier<Map<String, Object>> variableSupplier = () ->
-                new HashMap<String, Object>() {{
-                    Order order = orderService.saveOrder(userTaskRequest.getOrder());
-                    put(VARIABLE_ORDER_KEY, order);
-                    put(VARIABLE_ORDER_ID_KEY, order.getId());
-                }};
-        return completeUserTask(USER_TASK_ORDER_ID, userTaskRequest.getBusinessKey(), variableSupplier);
-    }
-
-
-    /**
-     * Complete Review Order task using the passed request body.
-     *
-     * @param simpleRequest     used in task completion
-     * @param isReviewCompleted param
-     * @return ResponseEntity
-     */
-    @PostMapping("review-order")
-    public ResponseEntity<String> completeReviewOrderTask(@RequestBody SimpleRequest simpleRequest,
-                                                          @RequestParam boolean isReviewCompleted) {
-        Supplier<Map<String, Object>> variableSupplier = () ->
-                new HashMap<String, Object>() {{
-                    put(VARIABLE_IS_REVIEW_COMPLETED_KEY, isReviewCompleted);
-                }};
-        return completeUserTask(USER_TASK_REVIEW_ORDER_ID, simpleRequest.getBusinessKey(), variableSupplier);
-    }
-
-    /**
-     * Complete Location Preview task using the passed request body.
-     *
-     * @param simpleRequest      used in task completion
-     * @param isLocationNeedTest param
-     * @return ResponseEntity
-     */
-    @PostMapping("location-preview")
-    public ResponseEntity<String> completeLocationPreviewTask(@RequestBody SimpleRequest simpleRequest,
-                                                              @RequestParam boolean isLocationNeedTest) {
-        Supplier<Map<String, Object>> variableSupplier = () ->
-                new HashMap<String, Object>() {{
-                    put(VARIABLE_IS_LOCATION_NEED_TEST_KEY, isLocationNeedTest);
-                }};
-        return completeUserTask(USER_TASK_LOCATION_PREVIEW_ID, simpleRequest.getBusinessKey(), variableSupplier);
-    }
-
-
-    /**
-     * Complete Make Test task using the passed request body.
-     *
-     * @param simpleRequest used in task completion
-     * @return ResponseEntity
-     */
-    @PostMapping("make-test")
-    public ResponseEntity<String> completeMakeTestTask(@RequestBody SimpleRequest simpleRequest) {
-        return completeUserTask(USER_TASK_MAKE_TEST_ID, simpleRequest.getBusinessKey(), () -> null);
-    }
-
-
-    /**
-     * Complete Review Report task using the passed request body.
-     *
-     * @param simpleRequest    used in task completion
-     * @param isReviewReportOk param
-     * @return ResponseEntity
-     */
-    @PostMapping("review-report")
-    public ResponseEntity<String> completeReviewReportTask(@RequestBody SimpleRequest simpleRequest,
-                                                           @RequestParam boolean isReviewReportOk) {
-        Supplier<Map<String, Object>> variableSupplier = () ->
-                new HashMap<String, Object>() {{
-                    put(VARIABLE_IS_REVIEW_REPORT_OK_KEY, isReviewReportOk);
-                }};
-        return completeUserTask(USER_TASK_REVIEW_REPORT_ID, simpleRequest.getBusinessKey(), variableSupplier);
-    }
-
-
-    /**
-     * Handle Business exception thrown in the process execution.
-     * For now it update the Order object of the process and move the flow sequence to Review Order task to
-     * process the order again after updating.
-     *
-     * @param userTaskRequest contain the updated order object.
-     * @return ResponseEntity
-     */
-    @PostMapping("handle-businessEX")
-    public ResponseEntity<String> handleBusinessEX(@RequestBody UserTaskRequest userTaskRequest) {
-        Task task = getUserTask(USER_TASK_HANDLE_BUSINESS_EX_ID, userTaskRequest.getBusinessKey());
-        Supplier<Map<String, Object>> variableSupplier = () ->
-                new HashMap<String, Object>() {{
-                    Long orderId = (Long) runtimeService.getVariable(task.getExecutionId(), VARIABLE_ORDER_ID_KEY);
-                    Order order = orderService.updateOrderAccordingToBR(orderId, userTaskRequest.getOrder());
-                    put(VARIABLE_ORDER_KEY, order);
-                }};
-        return completeUserTask(USER_TASK_HANDLE_BUSINESS_EX_ID, userTaskRequest.getBusinessKey(), variableSupplier);
-    }
-
-    /**
      * Search for task by taskDefinitionKey and businessKey and if task exists, complete it using
      * the variable supplied by the passed variableSupplier
      *
@@ -177,10 +66,11 @@ public class ProcessController implements Serializable {
      * @param variableSupplier  to supply the variable to be committed when completing the task
      * @return ResponseEntity
      */
-    private ResponseEntity<String> completeUserTask(String taskDefinitionKey,
-                                                    String businessKey,
-                                                    Supplier<Map<String, Object>> variableSupplier) {
-        Task task = getUserTask(taskDefinitionKey, businessKey);
+    protected ResponseEntity<String> completeUserTask(String processDefinitionKey,
+                                                      String taskDefinitionKey,
+                                                      String businessKey,
+                                                      Supplier<Map<String, Object>> variableSupplier) {
+        Task task = getUserTask(processDefinitionKey, taskDefinitionKey, businessKey);
         if (task != null) {
             taskService.complete(task.getId(), variableSupplier.get());
             return ResponseEntity.status(HttpStatus.OK).body("Task: " + taskDefinitionKey + " completed");
@@ -194,11 +84,11 @@ public class ProcessController implements Serializable {
      * @param cancelProcessInstanceRequest contain business key and cancellation reason
      * @return ResponseEntity
      */
-    @DeleteMapping("delete")
-    public ResponseEntity<String> cancelProcessInstance(@RequestBody CancelProcessInstanceRequest cancelProcessInstanceRequest) {
+    protected ResponseEntity<String> deleteProcessInstance(@Valid CancelProcessInstanceRequest cancelProcessInstanceRequest,
+                                                           String processDefinitionKey) {
         List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery()
                 .processInstanceBusinessKey(cancelProcessInstanceRequest.getBusinessKey())
-                .processDefinitionKey(PROCESS_DEFINITION_KEY)
+                .processDefinitionKey(processDefinitionKey)
                 .list();
         if (processInstances != null && !processInstances.isEmpty()) {
             StringBuilder deletedStringBuilder = new StringBuilder("Deleted Process Instances: \n");
@@ -221,11 +111,11 @@ public class ProcessController implements Serializable {
      * @param businessKey       for process instance
      * @return task if found or null
      */
-    private Task getUserTask(String taskDefinitionKey, String businessKey) {
+    protected Task getUserTask(String processDefinitionKey, String taskDefinitionKey, String businessKey) {
         log.info("Retrieving task with taskDefinitionKey: {} and businessKey:{}",
                 taskDefinitionKey, businessKey);
         TaskQuery taskQuery = taskService.createTaskQuery()
-                .processDefinitionKey(PROCESS_DEFINITION_KEY)
+                .processDefinitionKey(processDefinitionKey)
                 .taskDefinitionKey(taskDefinitionKey);
         if (businessKey != null) {
             taskQuery = taskQuery.processInstanceBusinessKey(businessKey);

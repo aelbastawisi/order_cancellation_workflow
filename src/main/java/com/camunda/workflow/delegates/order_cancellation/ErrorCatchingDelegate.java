@@ -1,4 +1,4 @@
-package com.camunda.workflow.delegates;
+package com.camunda.workflow.delegates.order_cancellation;
 
 import com.camunda.workflow.util.Constants;
 import lombok.extern.slf4j.Slf4j;

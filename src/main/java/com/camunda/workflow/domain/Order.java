@@ -21,6 +21,8 @@ public class Order implements Serializable {
     private Long id;
     private String name;
     private String address;
+    private String prerequisites;
+    private Boolean isConflict;
     private LocalDateTime locationPreviewTime;
 
 }

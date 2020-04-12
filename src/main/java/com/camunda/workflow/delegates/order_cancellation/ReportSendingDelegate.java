@@ -1,4 +1,4 @@
-package com.camunda.workflow.delegates;
+package com.camunda.workflow.delegates.order_cancellation;
 
 import com.camunda.workflow.controller.exceptions.BusinessException;
 import com.camunda.workflow.domain.Order;
